@@ -1,6 +1,4 @@
-#news_count_2014.py
-
-## News Articles Count
+## News Articles Count  --> news_count_2014.py
 News Articles Count is a tool which plots the number of articles for each day.This is not just
 limited to the news articles count, this python file can be used to any type of data which has 
 time stamp. 
@@ -13,12 +11,13 @@ The changes must be made to some parts of the script according to the needs of y
 2. Also, this is built using python, pandas, plotly
 3. Install all python dependencies as following. Donot install the dependencies to a virtual 
 environemnt.
+
 $ pip install -r requirements.txt
 
 ## Usage
-user@server.com$ spark-submit news_count_2014.py <inputJsonformatfile> <startdate yyyyMMdd> <enddate yyyyMMdd> <output>
+$ spark-submit  news_count_2014.py  <inputJsonformatfile>   <startdate yyyyMMdd>    <enddate yyyyMMdd>    <output>
 
-Example: spark-submit news_count_2014.py news.json.bz2 20140101 20141231 index
+Example: spark-submit   news_count_2014.py   news.json.bz2   20140101   20141231    index
 
 Here the order of start date and end date is not important.
 
