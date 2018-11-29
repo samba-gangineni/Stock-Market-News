@@ -8,3 +8,7 @@ venv/
 
 # Json files
 *.json
+
+# Spark-sql history
+spark-warehouse/
+*spark-warehouse/

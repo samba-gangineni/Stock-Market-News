@@ -1,9 +1,13 @@
 from __future__ import print_function
 from datetime import datetime
+import sys
+import pandas as pd
+import plotly.plotly as py
+import plotly.graph_objs as go
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from pyspark.sql.functions import lit, to_date, sum
-import sys
+
 
 __author__ = "Sambasiva Rao Gangineni"
 
@@ -113,5 +117,45 @@ if __name__=="__main__":
     articles_count = desired_dates.select("date").withColumn('COUNT',lit(1))\
                     .groupBy('date').agg(sum("COUNT")).orderBy("date",ascending=True)
     
-    articles_count.show(60,False)
+    #Converting this dataframe into pandas dataframe for plotting
+    articles_count_pandas = articles_count.toPandas()
+    articles_count_pandas["date"] = articles_count_pandas["date"].astype('datetime64[ns]')
+    
+    #Creating the graph with the range slider
+    # first providing the data for the line
+    trace0 = go.Scatter(
+        x = articles_count_pandas["date"],
+        y = articles_count_pandas["sum(COUNT)"],
+        name = "Articles_Count",
+        line = dict(color = '#17BECF'),
+        opacity=0.8)
+    
+    data = [trace0]
+
+    #Providing the layout info
+    layout = dict(
+        title='Timeseries of news articles count from {} to {}'.format(staringdate_new,endingdate_new),
+        xaxis=dict(
+            rangeselector=dict(
+                buttons=list([
+                    dict(count=1,
+                        label='1m',
+                        step='month',
+                        stepmode='backward'),
+                    dict(count=6,
+                        label='6m',
+                        step='month',
+                        stepmode='backward'),
+                    dict(step='all')
+                ])
+            ),
+            rangeslider = dict(
+                visible=True
+            ),
+            type='date'
+
+        )
+        
+    )
+
     
