@@ -2,7 +2,7 @@ from __future__ import print_function
 from datetime import datetime
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
-from pyspark.sql.functions import lit, to_date
+from pyspark.sql.functions import lit, to_date, sum
 import sys
 
 __author__ = "Sambasiva Rao Gangineni"
@@ -77,6 +77,41 @@ if __name__=="__main__":
     #Creating a new column with date datatype
     news_date_df = news_url_title_df.select("Url","Title","Dop",to_date("Dop",'yyyy-MM-dd').alias('date'))
     
-    #Filtering the df based on the input dates
-    desired_dates = 
+    #Checking for the dates
+    staringdate = sys.argv[2]
+    endingdate = sys.argv[3]
+
+    if len(staringdate)!=8 or len(endingdate)!=8:
+        print("Error: Please make sure starting date and ending date are in format yyyyMMdd",file=sys.stderr)
+        exit(-1)
+    
+    try:
+        if int(staringdate)>int(endingdate):
+            temp=staringdate
+            staringdate = endingdate
+            endingdate = temp
+    except:
+        print("Error: Please make sure the starting dates and ending dates has only numbers",file=sys.stderr)
+        exit(-1)
+
+    try:
+        datetime(int(staringdate[0:4]),int(staringdate[4:6]),int(staringdate[6:8]))
+        datetime(int(endingdate[0:4]),int(endingdate[4:6]),int(endingdate[6:8]))
+    except:
+        print("Error: Please make sure the month and days are valid",file=sys.stderr)
+        exit(-1)
+
+    #Changing the dates yyyyMMdd into yyyy-MM-dd format
+    staringdate_new = staringdate[0:4]+'-'+staringdate[4:6]+'-'+staringdate[6:8]
+    endingdate_new = endingdate[0:4]+'-'+endingdate[4:6]+'-'+endingdate[6:8]
+    
+    #Filtering the needed news articles
+    desired_dates = news_date_df.filter(news_date_df["date"]>=(lit(staringdate_new)))\
+                    .filter(news_date_df["date"]<=(lit(endingdate_new)))
+    
+    #Counting the articles
+    articles_count = desired_dates.select("date").withColumn('COUNT',lit(1))\
+                    .groupBy('date').agg(sum("COUNT")).orderBy("date",ascending=True)
+    
+    articles_count.show(60,False)
     
