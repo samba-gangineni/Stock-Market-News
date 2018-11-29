@@ -2,7 +2,7 @@ from __future__ import print_function
 from datetime import datetime
 import sys
 import pandas as pd
-import plotly.plotly as py
+from plotly.offline import plot,iplot
 import plotly.graph_objs as go
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
@@ -157,5 +157,9 @@ if __name__=="__main__":
         )
         
     )
+
+    fig = dict(data=data,layout=layout)
+    html_division = plot(fig,output_type='div')
+    print(html_division)
 
     
