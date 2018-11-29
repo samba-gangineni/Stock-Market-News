@@ -37,6 +37,25 @@ def urlAndTitle(x):
     
     return (url,title,dop[1:5]+'-'+dop[5:7]+'-'+dop[7:9])
 
+'''
+    This function returns the html
+'''
+def image_to_html(division_data):
+    return """
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>News Article Count</title>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      </head>
+      <body>
+        <div>
+          {}
+        </div>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      </body>
+    </html>
+    """.format(division_data)
 
 if __name__=="__main__":
     if len(sys.argv)!=5:
