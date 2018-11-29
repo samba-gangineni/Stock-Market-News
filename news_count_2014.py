@@ -171,6 +171,14 @@ if __name__=="__main__":
                         label='6m',
                         step='month',
                         stepmode='backward'),
+                    dict(count=7,
+                        label='7d',
+                        step='day',
+                        stepmode='backward'),
+                    dict(count=15,
+                        label='15d',
+                        step='day',
+                        stepmode='backward'),
                     dict(step='all')
                 ])
             ),
