@@ -1,0 +1,10 @@
+#virtual environments
+venv/
+*venv/
+
+# text and bz2 files
+*.txt
+*.bz2
+
+# Json files
+*.json
