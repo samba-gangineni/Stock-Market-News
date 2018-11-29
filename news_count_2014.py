@@ -43,6 +43,36 @@ if __name__=="__main__":
         print("Usage: spark-submit news_count_2014.py <input-file-name> <starting date yyyymmdd> <ending date yyyymmdd> <output-file>",file=sys.stderr)
         exit(-1)
     
+    #Checking for the dates
+    staringdate = sys.argv[2]
+    endingdate = sys.argv[3]
+
+    if len(staringdate)!=8 or len(endingdate)!=8:
+        print("Error: Please make sure starting date and ending date are in format yyyyMMdd",file=sys.stderr)
+        exit(-1)
+    
+    try:
+        if int(staringdate)>int(endingdate):
+            temp=staringdate
+            staringdate = endingdate
+            endingdate = temp
+    except:
+        print("Error: Please make sure the starting dates and ending dates has only numbers",file=sys.stderr)
+        exit(-1)
+
+    try:
+        datetime(int(staringdate[0:4]),int(staringdate[4:6]),int(staringdate[6:8]))
+        datetime(int(endingdate[0:4]),int(endingdate[4:6]),int(endingdate[6:8]))
+    except:
+        print("Error: Please make sure the month and days are valid",file=sys.stderr)
+        exit(-1)
+    
+    #Checking for extensions
+    if '.' in sys.argv[4]:
+        print("Error: make sure that you provide plain output file name",file=sys.stderr)
+        exit(-1)
+
+    
     """
     Reading in the data using RDD
     """
@@ -81,30 +111,6 @@ if __name__=="__main__":
     #Creating a new column with date datatype
     news_date_df = news_url_title_df.select("Url","Title","Dop",to_date("Dop",'yyyy-MM-dd').alias('date'))
     
-    #Checking for the dates
-    staringdate = sys.argv[2]
-    endingdate = sys.argv[3]
-
-    if len(staringdate)!=8 or len(endingdate)!=8:
-        print("Error: Please make sure starting date and ending date are in format yyyyMMdd",file=sys.stderr)
-        exit(-1)
-    
-    try:
-        if int(staringdate)>int(endingdate):
-            temp=staringdate
-            staringdate = endingdate
-            endingdate = temp
-    except:
-        print("Error: Please make sure the starting dates and ending dates has only numbers",file=sys.stderr)
-        exit(-1)
-
-    try:
-        datetime(int(staringdate[0:4]),int(staringdate[4:6]),int(staringdate[6:8]))
-        datetime(int(endingdate[0:4]),int(endingdate[4:6]),int(endingdate[6:8]))
-    except:
-        print("Error: Please make sure the month and days are valid",file=sys.stderr)
-        exit(-1)
-
     #Changing the dates yyyyMMdd into yyyy-MM-dd format
     staringdate_new = staringdate[0:4]+'-'+staringdate[4:6]+'-'+staringdate[6:8]
     endingdate_new = endingdate[0:4]+'-'+endingdate[4:6]+'-'+endingdate[6:8]
@@ -158,8 +164,17 @@ if __name__=="__main__":
         
     )
 
+    #data and layout for the figure
     fig = dict(data=data,layout=layout)
-    html_division = plot(fig,output_type='div')
-    print(html_division)
 
+    #html division tag is the output
+    html_division = plot(fig,output_type='div')
+    
+    # Inserting the chart into a division
+    html_script = image_to_html(html_division)
+
+    with open(sys.argv[4]+'.html','w') as imgToHtml:
+        imgToHtml.write(html_script)
+    
+    sc.stop()
     
