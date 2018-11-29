@@ -187,6 +187,10 @@ if __name__=="__main__":
             ),
             type='date'
 
+        ),
+        yaxis=dict(
+            title='Count of articles',
+            range=[100,1750]
         )
         
     )
