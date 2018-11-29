@@ -15,7 +15,7 @@ environemnt.
 $ pip install -r requirements.txt
 
 ## Usage
-$ spark-submit  news_count_2014.py  <inputJsonformatfile>   <startdate yyyyMMdd>    <enddate yyyyMMdd>    <output>
+$ spark-submit  news_count_2014.py  inputJsonformatfile   startdate(yyyyMMdd)    enddate(yyyyMMdd)    output
 
 Example: spark-submit   news_count_2014.py   news.json.bz2   20140101   20141231    index
 
